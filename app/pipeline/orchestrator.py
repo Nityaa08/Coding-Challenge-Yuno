@@ -1,6 +1,5 @@
 import asyncio
 import time
-import uuid
 from datetime import datetime
 from dataclasses import asdict
 
@@ -24,10 +23,6 @@ async def run_pipeline(
 ):
     start_time = time.time()
     event_log = []
-
-    async def tracked_emit(event: AgentEvent):
-        event_log.append(asdict(event))
-        await queue.put(event)
 
     async with AsyncSessionLocal() as db:
         result = await db.execute(select(ResearchSession).where(ResearchSession.id == session_id))

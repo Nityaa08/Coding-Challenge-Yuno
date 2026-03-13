@@ -40,9 +40,15 @@ class ExtractorAgent(BaseAgent):
         ranked = [p for p in ranked if p["similarity"] >= MIN_SIMILARITY]
 
         top_k = ranked[:settings.top_k_passages]
+
+        if not top_k:
+            await self.emit(queue, "EXTRACTING", "No passages met the relevance threshold")
+            return []
+
+        avg_sim = float(np.mean([p["similarity"] for p in top_k]))
         await self.emit(
             queue, "EXTRACTING",
-            f"Selected top {len(top_k)} passages (avg similarity: {np.mean([p['similarity'] for p in top_k]):.3f})",
-            {"top_k": len(top_k), "avg_similarity": float(np.mean([p["similarity"] for p in top_k]))},
+            f"Selected top {len(top_k)} passages (avg similarity: {avg_sim:.3f})",
+            {"top_k": len(top_k), "avg_similarity": avg_sim},
         )
         return top_k

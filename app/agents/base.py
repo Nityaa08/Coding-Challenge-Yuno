@@ -13,9 +13,6 @@ class AgentEvent:
     data: dict = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
 
-    def to_dict(self) -> dict:
-        return asdict(self)
-
 
 class BaseAgent(ABC):
     def __init__(self, name: str):
