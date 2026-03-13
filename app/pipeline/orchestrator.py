@@ -57,6 +57,18 @@ async def run_pipeline(
                 continue
             all_passages.extend(r)
 
+        # Deduplicate by URL — prevents duplicate passages from inflating results
+        seen_urls = set()
+        deduped = []
+        for p in all_passages:
+            url = p.get("url", "")
+            if url and url in seen_urls:
+                continue
+            if url:
+                seen_urls.add(url)
+            deduped.append(p)
+        all_passages = deduped
+
         sources_searched = len(all_passages)
 
         async with AsyncSessionLocal() as db:

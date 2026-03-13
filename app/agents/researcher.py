@@ -67,10 +67,12 @@ class ResearcherAgent(BaseAgent):
 
     async def _search_arxiv(self, query: str) -> list[dict]:
         try:
+            # Scope to CS + stats categories to avoid unrelated science papers
+            scoped = f"(ti:{query} OR abs:{query}) AND (cat:cs.* OR cat:stat.ML OR cat:eess.*)"
             async with httpx.AsyncClient(timeout=15.0) as client:
                 resp = await client.get(
                     "https://export.arxiv.org/api/query",
-                    params={"search_query": f"all:{query}", "max_results": 3, "sortBy": "relevance"},
+                    params={"search_query": scoped, "max_results": 3, "sortBy": "relevance"},
                 )
                 resp.raise_for_status()
                 root = ElementTree.fromstring(resp.text)
