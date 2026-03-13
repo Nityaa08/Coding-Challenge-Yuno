@@ -2,6 +2,7 @@ import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sentence_transformers import SentenceTransformer
+from sqlalchemy import text
 
 from app.config import settings
 from app.database import engine, Base
@@ -62,7 +63,7 @@ async def health():
     embedder_status = "loaded" if hasattr(app.state, "embedder") and app.state.embedder else "not loaded"
     try:
         async with engine.connect() as conn:
-            await conn.execute(__import__("sqlalchemy", fromlist=["text"]).text("SELECT 1"))
+            await conn.execute(text("SELECT 1"))
         db_status = "ok"
     except Exception:
         db_status = "error"
