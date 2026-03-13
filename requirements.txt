@@ -1,2 +1,10 @@
 fastapi
 uvicorn[standard]
+pydantic-settings
+httpx
+sentence-transformers
+sse-starlette
+aiosqlite
+SQLAlchemy[asyncio]
+duckduckgo-search==6.2.6
+numpy
