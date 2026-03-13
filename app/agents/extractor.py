@@ -35,6 +35,10 @@ class ExtractorAgent(BaseAgent):
             reverse=True,
         )
 
+        # Drop passages below minimum similarity threshold — removes junk results
+        MIN_SIMILARITY = 0.15
+        ranked = [p for p in ranked if p["similarity"] >= MIN_SIMILARITY]
+
         top_k = ranked[:settings.top_k_passages]
         await self.emit(
             queue, "EXTRACTING",
